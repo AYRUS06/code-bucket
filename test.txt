@@ -1,0 +1,2 @@
+this is my pgm
+to read and write in file

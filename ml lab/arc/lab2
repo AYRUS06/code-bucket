@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_LINE_LENGTH 1000
+#define MAX_NUM_ATTRIBUTES 100
+
+int main(int argc, char *argv[]) {
+
+    // Check for correct command-line arguments
+    if (argc != 3) {
+        printf("Usage: %s input.csv output.arff\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    // Open input CSV file for reading
+    FILE *in_file = fopen(argv[1], "r");
+    if (in_file == NULL) {
+        printf("Error: Unable to open input file %s\n", argv[1]);
+        exit(EXIT_FAILURE);
+    }
+
+    // Open output ARFF file for writing
+    FILE *out_file = fopen(argv[2], "w");
+    if (out_file == NULL) {
+        printf("Error: Unable to open output file %s\n", argv[2]);
+        exit(EXIT_FAILURE);
+    }
+
+    // Write ARFF header to output file
+    fprintf(out_file, "@RELATION data\n");
+
+    // Parse CSV header and write ARFF attribute declarations to output file
+    char line[MAX_LINE_LENGTH];-
+    if (fgets(line, MAX_LINE_LENGTH, in_file) != NULL) {
+        char *token = strtok(line, ",");
+        int num_attributes = 0;
+        while (token != NULL && num_attributes < MAX_NUM_ATTRIBUTES) {
+            fprintf(out_file, "@ATTRIBUTE %s NUMERIC\n", token);
+            num_attributes++;
+            token = strtok(NULL, ",");
+        }
+    } else {
+        printf("Error: Input file %s is empty\n", argv[1]);
+        exit(EXIT_FAILURE);
+    }
+
+    // Write ARFF data section header to output file
+    fprintf(out_file, "@DATA\n");
+
+    // Parse CSV data and write ARFF data section to output file
+    while (fgets(line, MAX_LINE_LENGTH, in_file) != NULL) {
+        fprintf(out_file, "%s", line);
+    }
+
+    // Close input and output files
+    fclose(in_file);
+    fclose(out_file);
+
+    printf("Conversion from %s to %s completed successfully.\n", argv[1], argv[2]);
+
+    return 0;
+}
+
+
+
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+int main() {
+    string inputFileName = "input.csv";
+    string outputFileName = "output.arff";
+    string relationName = "relationName";
+    ifstream inputFile(inputFileName);
+    ofstream outputFile(outputFileName);
+
+    // Write ARFF header
+    outputFile << "@RELATION " << relationName << endl << endl;
+    string line;
+    getline(inputFile, line);
+    size_t pos = 0;
+    while ((pos = line.find(',')) != string::npos) {
+        string attributeName = line.substr(0, pos);
+        outputFile << "@ATTRIBUTE " << attributeName << " NUMERIC" << endl;
+        line.erase(0, pos + 1);
+    }
+    outputFile << "@ATTRIBUTE " << line << " NUMERIC" << endl;
+
+    // Write ARFF data
+    outputFile << endl << "@DATA" << endl;
+    while (getline(inputFile, line)) {
+        outputFile << line << endl;
+    }
+
+    inputFile.close();
+    outputFile.close();
+}

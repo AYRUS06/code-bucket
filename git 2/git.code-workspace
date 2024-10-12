@@ -1,0 +1,21 @@
+{
+  "folders": [
+    {
+      "path": "../git"
+    },
+    {
+      "path": "."
+    },
+    {
+      "path": "../kk/LabNewPrograms"
+    },
+    {
+      "path": "../New folder"
+    }
+  ],
+  "settings": {
+    "files.associations": {
+      "iostream": "cpp"
+    }
+  }
+}
